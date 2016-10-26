@@ -11,6 +11,7 @@ public class Main {
     }
     for(State s:path) s.Show();
     System.out.println("The no of steps="+path.size());
+    System.out.println("The no of instances="+State.NoOfInstance);
   }
 
   public static void main(String[] args){
@@ -20,18 +21,18 @@ public class Main {
 //            1,3,_,
 //            5,2,8,
 //            6,4,7);
-//    State initialState = new State(
+//           State initialState = new State(
 //            4,  10,
 //           2,  14,  6,  5,
 //            3,  7, 13,  11,
 //            9, _, 1, 15,
 //                    8, 12);
         State initialState = new State(
-            _,  1,
-           4,  2,  9,  5,
-            3,  12, 8,  6,
-            7, 11, 14, 10,
-                    13, 15); 
+            "a",  "0",
+           "d",  "b",  "i",  "e",
+            "c",  "l", "h",  "f",
+            "g", "k",  "n", "j",
+                    "m", "o"); 
 
     OCList open = new OCList();
     OCList closed = new OCList();

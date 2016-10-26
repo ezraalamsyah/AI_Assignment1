@@ -1,15 +1,16 @@
 package  ai_assignment1;
 
 import static ai_assignment1.Movement.*;
+import java.math.BigInteger;
 import java.util.*;
 
 enum Movement{LEFT,UP,RIGHT,DOWN}
 
-public class State implements Comparable{
+public final class State implements Comparable{
 
   static int NoOfInstance=0;
 
-  private final ArrayList<Integer> Slots;
+  private final long Slots;
   private final int Level;
   private final byte HV;//Heuristic Value
   private final byte BlankPos;
@@ -55,7 +56,6 @@ public class State implements Comparable{
 
   static {//Non-static block
     NoOfInstance++;
-    System.out.println(NoOfInstance);
   }
 
   @Override public boolean equals(Object obj){
@@ -69,7 +69,7 @@ public class State implements Comparable{
     return getEV()-((State)obj).getEV();
   }
 
-  private State(State parent, ArrayList<Integer> slots){
+  private State(State parent, long slots){
     Slots = slots;
     BlankPos = BlankPosition(Slots);
     Parent = parent;
@@ -78,25 +78,29 @@ public class State implements Comparable{
     HV = TotalMissPos(Slots);
   }
 
-  public State(int d0,int d1,int d2,int d3,int d4,int d5,int d6,int d7,int d8,int d9,int d10 , int d11 , int d12 , int d13 , int d14 , int d15){
-    
-      Slots= new ArrayList<Integer>();
-      Slots.add(d0);
-      Slots.add(d1);
-      Slots.add(d2);
-      Slots.add(d3);
-      Slots.add(d4);
-      Slots.add(d5);
-      Slots.add(d6);
-      Slots.add(d7);
-      Slots.add(d8);
-      Slots.add(d9);
-      Slots.add(d10);
-      Slots.add(d11);
-      Slots.add(d12);
-      Slots.add(d13);
-      Slots.add(d14);
-      Slots.add(d15);
+  public State(String d0,String d1,String d2,String d3,String d4,String d5,
+          String d6,String d7,String d8,String d9,String d10 ,String d11 ,
+          String d12 ,String d13 ,String d14 ,String d15){
+
+      String HexString = Character.toString(toHex(d0).charAt(1)) +
+              Character.toString(toHex(d1).charAt(1)) +
+              Character.toString(toHex(d2).charAt(1)) +
+              Character.toString(toHex(d3).charAt(1)) +
+              Character.toString(toHex(d4).charAt(1)) +
+              Character.toString(toHex(d5).charAt(1)) +
+              Character.toString(toHex(d6).charAt(1)) +
+              Character.toString(toHex(d7).charAt(1)) +
+              Character.toString(toHex(d8).charAt(1)) +
+              Character.toString(toHex(d9).charAt(1)) +
+              Character.toString(toHex(d10).charAt(1)) +
+              Character.toString(toHex(d11).charAt(1)) +
+              Character.toString(toHex(d12).charAt(1)) +
+              Character.toString(toHex(d13).charAt(1)) +
+              Character.toString(toHex(d14).charAt(1)) +
+              Character.toString(toHex(d15).charAt(1));
+       
+      System.out.println(HexString);
+      Slots = Long.parseLong(HexString, 16);
 
 //    assert(isWellFormed(Slots)):"Non Well-Formed!";
     BlankPos = BlankPosition(Slots);
@@ -105,31 +109,86 @@ public class State implements Comparable{
     HV = TotalMissPos(Slots);
   }
 
-  private static byte TotalMissPos(ArrayList<Integer> slots){
-    byte totalMissed=0;
-    for(int pos=0;pos<16;pos++){
-      totalMissed += MissPosTable[slots.get(pos)][pos];
+  public static String toHex(String arg) {
+    return String.format("%x", new BigInteger(1, arg.getBytes(/*YOUR_CHARSET?*/)));
+  }
+  
+  public static int[] charToIndex(String hs){
       
+      int[] indexArray = new int[16];
+      for(int i=0; i<16; i++){
+          switch (hs.charAt(i)) {
+              case '1':
+                  indexArray[i] = 1;
+                  break;
+              case '2':
+                  indexArray[i] = 2;
+                  break;
+              case '3':
+                  indexArray[i] = 3;
+                  break;
+              case '4':
+                  indexArray[i] = 4;
+                  break;
+              case '5':
+                  indexArray[i] = 5;
+                  break;
+              case '6':
+                  indexArray[i] = 6;
+                  break;
+              case '7':
+                  indexArray[i] = 7;
+                  break;
+              case '8':
+                  indexArray[i] = 8;
+                  break;
+              case '9':
+                  indexArray[i] = 9;
+                  break;
+              case 'a':
+                  indexArray[i] = 10;
+                  break;
+              case 'b':
+                  indexArray[i] = 11;
+                  break;
+              case 'c':
+                  indexArray[i] = 12;
+                  break;
+              case 'd':
+                  indexArray[i] = 13;
+                  break;
+              case 'e':
+                  indexArray[i] = 14;
+                  break;
+              case 'f':
+                  indexArray[i] = 15;
+                  break;
+              case '0':
+                  indexArray[i] = 0;
+                  break;
+              default:
+                  break;
+          }
+      }
+      
+      return indexArray;
+  }
+  
+  private static byte TotalMissPos(long slots){
+    byte totalMissed=0;
+    
+    String hs = Long.toHexString(slots);
+    int[] indexArray = charToIndex(hs);
+    for(int pos=0;pos<16;pos++){
+      totalMissed += MissPosTable[indexArray[pos]][pos];
     }
     return totalMissed;
   }  
 
   public boolean isGoal(){
-
-      boolean goal = true;
-      int a = 1;
-      for(int i=0;i<16;i++){
-          if(i== 15){
-              if(Slots.get(i) != 0){
-                  goal=false;
-              }
-          }else if(Slots.get(i)!=a){
-              goal = false;
-          }
-          a++;
-      }
- return goal;
+    return (Slots == 1311768467463790320L);
   }
+  
 //?
  public State[] NextStates(){
     //System.out.println("BlankPos is " + BlankPos);
@@ -147,7 +206,7 @@ public class State implements Comparable{
   }
 
   public int getEV(){
-    return Level + 100*HV;
+    return Level + 9*HV;
   }
 
 //  static boolean isWellFormed(ArrayList<Integer> slots){
@@ -159,32 +218,44 @@ public class State implements Comparable{
 //    return (flags==0)&&(slots==0);
 //  }
 
-  static byte BlankPosition(ArrayList<Integer> slots){
+  static byte BlankPosition(long slots){
     byte pos;
-    for(pos=0;(pos<16)&&((slots.get(pos))!=0);pos++){
+    String d = Long.toHexString(slots);
+    System.out.println(d);
+    char[] values = d.toCharArray();
+    
+    if(values.length == 15)
+        return pos=0;
+    
+    for(int i=0; i<values.length;i++){
+        System.out.println(values[i]);
+    }
+    for(pos=0;(pos<values.length)&&((values[pos]!='0'));pos++);
        // System.out.println("pos is not "  + pos);
-    }	
-    //System.out.println("pos is "  + pos);
+    	
+       
+    System.out.println("pos is "  + pos);
     return pos;
   } 
  //p = position of number
-  static ArrayList<Integer> SwapDigits(ArrayList<Integer> slots, int p1, int p2){
-    
-      int d1 =0;
-      int d2 =0;
-    for(int i=0; i<16;i++){
-        if(i == p1){
-            d1 = slots.get(i);
-        }else if(i == p2){
-            d2 = slots.get(i);
-        }
-    }  
+  static long SwapDigits(long slots, int p1, int p2){
+      long newSlots = 0;
+      String d = Long.toHexString(slots);
+      char[] values = d.toCharArray();
+      char temp = values[p1];
+      values[p1] = values[p2];
+      values[p2] = temp;
+      d = new String(values);
+      newSlots = Long.parseLong(d, 16);
+     
+      return newSlots;
+  }  
     
 //getDigit(slots,p1);
     //int d2 = slots.set(p1, p2);
             //getDigit(slots,p2);
-    return setDigit(setDigit(slots,p1,d2),p2,d1);
-  }
+//    return setDigit(setDigit(slots,p1,d2),p2,d1);
+//  }
 //get from arraylist
 //  static int getDigit(ArrayList<Integer> slots, int p){
 //    while(0!=p--) slots /= 10;
@@ -192,26 +263,33 @@ public class State implements Comparable{
 //  }
 
  //set new value?
-  static ArrayList<Integer> setDigit(ArrayList<Integer> slots, int position, int digit){
-    ArrayList<Integer> newSlots= new ArrayList<Integer>();
-    for(int i=0;i<16;i++){
-      newSlots.add(((i==position)?digit:(slots.get(i)))); 
-
-    }
-    return newSlots;
-  }
+//  static long setDigit(long slots, int position, String digit){
+//    long newSlots= 0;
+//    String hs = Long.toHexString(slots);
+//    int[] indexArray = charToIndex(hs);
+//    for(int i=0;i<16;i++){
+//        if(indexArray[i] == position){
+//            String a = Character.toString(toHex(digit).charAt(1));
+//            
+//        }
+//      //((i==position)?digit:(slots.get(i))a); 
+//
+//    }
+//    return newSlots;
+//  }
 
   //display array list
   public void Show(){
     //ArrayList<Integer> slots=Slots;
     char[] getChar = {'_','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o'};
     int i = 0;
-    
+    String hs = Long.toHexString(Slots);
+    int[] d = charToIndex(hs);
     System.out.println("State:\n--------------");
     for(i=0;i<2;i++){
-        int d = Slots.get(i);
+        
         System.out.print("| ");
-        System.out.print(getChar[d]);
+        System.out.print(getChar[d[i]]);
 //      int d = slots.get(i);
 //      System.out.print((d==0)?"_":d);
 //      
@@ -221,17 +299,17 @@ public class State implements Comparable{
     for(int j = 0; j<3 ; j++){
         System.out.print("| \n--------------\n");
         for(int k = 0; k<4; k++){
-            int d = Slots.get((i++));
             System.out.print("| ");
-            System.out.print(getChar[d]);
+            System.out.print(getChar[d[i]]);
+            i++;
         }
     }
     System.out.print("| \n--------------\n");
     System.out.print("      ");
     for(int l = 14; l<16 ; l++){
-        int d = Slots.get(l);
         System.out.print("| ");
-        System.out.print(getChar[d]);
+        System.out.print(getChar[d[i]]);
+        i++;
     }
     System.out.print("| \n--------------\n");
     
@@ -239,7 +317,7 @@ public class State implements Comparable{
   }
 
   private State Move(Movement m){
-    ArrayList<Integer> newSlots = null;
+    long newSlots = 0;
     switch(m){
       case LEFT: //assert((BlankPos%3)!=0):"Cannot move LEFT;";
           //
