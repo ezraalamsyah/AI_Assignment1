@@ -72,7 +72,6 @@ public final class State implements Comparable{
         BlankPos = BlankPosition(Slots);
         Parent = parent;
         Level = Parent.Level + 1;
-        System.out.println("Level="+Level);
         HV = TotalMissPos(Slots);
     }
     
@@ -258,17 +257,8 @@ public final class State implements Comparable{
     }
     
     public int getEV(){
-        return 3*Level + 4*HV;
+        return Level + 1*HV;
     }
-    
-    //  static boolean isWellFormed(ArrayList<Integer> slots){
-    //    int flags=0x000001FF;
-    //    for(int i=0;i<9;i++){
-    //      flags &= ~(1<<(slots.get(i)));
-    //
-    //    }
-    //    return (flags==0)&&(slots==0);
-    //  }
     
     static byte BlankPosition(long slots){
         byte pos;
@@ -279,8 +269,7 @@ public final class State implements Comparable{
         return pos=0;
         
         for(pos=0;(pos<values.length)&&((values[pos]!='0'));pos++);
-        
-        
+ 
         return pos;
     }
     //p = position of number
