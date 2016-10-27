@@ -27,12 +27,24 @@ public class Main {
 //            3,  7, 13,  11,
 //            9, _, 1, 15,
 //                    8, 12);
-        State initialState = new State(
-            "a",  "0",
-           "d",  "b",  "i",  "e",
-            "c",  "l", "h",  "f",
-            "g", "k",  "n", "j",
-                    "m", "o"); 
+//        State initialState = new State(
+//            "a",  "0",
+//           "d",  "b",  "i",  "e",
+//            "c",  "l", "h",  "f",
+//            "g", "k",  "n", "j",
+//                    "m", "o"); 
+//        State initialState = new State(
+//            "a",  "b",
+//           "c",  "d",  "e",  "f",
+//            "g",  "h", "i",  "j",
+//            "k", "l",  "m", "n",
+//                    "0", "o"); 
+           State initialState = new State(
+            "d",  "j",
+           "b",  "n",  "f",  "e",
+            "c",  "g", "m",  "k",
+            "i", "0",  "a", "o",
+                    "h", "l"); 
 
     OCList open = new OCList();
     OCList closed = new OCList();
